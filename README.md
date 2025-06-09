@@ -18,31 +18,8 @@ How It Will Work
 - Professional Front-End: Visitors will see a clean, organized directory with each state’s logo, leadership information, website link, and conference dates. 
 - Independent System: The directory will operate through a plugin, keeping it separate from the website’s theme and easy to maintain. 
 
-Plugin Structure 
-
-The plugin will follow a professional, organized folder structure: 
- 
-state-directory-plugin/ 
-│-- state-directory-plugin.php          	← Main plugin file (entry point) 
-│-- includes/ 
-│   │-- class-sdp-database.php         	← Handles database setup 
-│   │-- class-sdp-admin.php             	← Handles admin dashboard forms 
-│   │-- class-sdp-shortcode.php        	← Handles the front-end display 
-│-- assets/ 
-│   │-- css/ 
-│   │   │-- styles.css                  	       	← Front-end styles (for layout and design) 
-│   │-- js/ 
-│   │   │-- script.js                    	       	← JavaScript for interactivity 
-│-- uninstall.php                      ← Removes the directory database table if the plugin is uninstalled 
-
- 
-
- 
-
 How the Directory Will Be Displayed 
 
 - After creating and activating the plugin, a new page will be added to the website where the directory will be visible. 
 - The administrator will simply add a special shortcode like [state_directory] to a page, and the directory will automatically appear. 
-- No coding or technical skills are needed to update or add information - only simple form submissions through the admin panel. 
-
- 
+- No coding or technical skills are needed to update or add information - only simple form submissions through the admin panel.
