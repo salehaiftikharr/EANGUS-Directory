@@ -1,204 +1,68 @@
 <?php
 
+/**
+ * Class StateDirectoryShortcode
+ * Handles front-end rendering of various sections using shortcodes
+ */
 class StateDirectoryShortcode {
 
+    /**
+     * Main shortcode to render the entire directory page
+     */
     public static function render_all() {
         global $wpdb;
-        $states = self::get_unique_column_values('sdp_state_directory', 'state');
-        $areas = self::get_unique_column_values('sdp_state_directory', 'area');
-
-        ob_start(); ?>
-
-        <div class="sdp-hero">
-            <h1>State Association Directory</h1>
-            <div class="sdp-filter-bar">
-                <label for="area-select">Area</label>
-                <select id="area-select">
-                    <option value="all">All</option>
-                    <?php foreach ($areas as $area): ?>
-                        <option value="<?php echo esc_attr($area); ?>"><?php echo esc_html($area); ?></option>
-                    <?php endforeach; ?>
-                </select>
-
-                <label for="state-select">State</label>
-                <select id="state-select">
-                    <option value="all">All</option>
-                    <?php foreach ($states as $state): ?>
-                        <option value="<?php echo esc_attr($state); ?>"><?php echo esc_html($state); ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-        </div>
-
-        <div id="state-card-grid" class="sdp-card-grid">
-            <?php echo self::render_state_cards(); ?>
-        </div>
-
-        <div id="sdp-modal" class="sdp-modal">
-            <div class="sdp-modal-content">
-                <span class="sdp-close">&times;</span>
-                <div id="sdp-modal-body"></div>
-            </div>
-        </div>
-
-        <?php
-        echo self::render_annual_conferences();
-        echo self::render_executive_officers();
-        echo self::render_area_chairs();
-        echo self::render_executive_council();
-        echo self::render_committees();
-        echo self::render_auxiliary_exec_board();
-        echo self::render_past_presidents();
-        return ob_get_clean();
-    }
-
-    public static function render_state_cards() {
-        global $wpdb;
-        $results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}sdp_state_directory");
 
         ob_start();
-        foreach ($results as $entry) {
-            echo "<div class='sdp-card' data-state='" . esc_attr($entry->state) . "' data-area='" . esc_attr($entry->area) . "'>";
-            echo "<p><strong>State:</strong> " . esc_html($entry->state) . "</p>";
-            echo "<p><strong>Area:</strong> " . esc_html($entry->area) . "</p>";
-            echo "<p><strong>President:</strong> " . esc_html($entry->president_name) . "</p>";
-            echo "<p><strong>Email:</strong> " . esc_html($entry->email) . "</p>";
-            echo "<p><strong>Phone:</strong> " . esc_html($entry->phone) . "</p>";
-            echo "<p><strong>Address:</strong> " . esc_html($entry->address) . "</p>";
-            echo "</div>";
-        }
+
+        // Hero section with title and tab links
+        echo '<div class="bg-gradient-to-r from-slate-900 to-blue-900 text-white py-16 px-4">';
+        echo '<div class="max-w-4xl mx-auto text-center">';
+        echo '<h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4">State Association Directory</h1>';
+        echo '<div class="border-t-2 border-b-2 border-yellow-400 w-24 mx-auto my-4"></div>';
+        echo '<p class="text-lg font-light">FILTER BY</p>';
+        echo '<div class="mt-4 text-lg font-medium space-x-4">';
+        echo '<a href="#area-section" class="hover:underline">Area</a> <span class="text-white">|</span> ';
+        echo '<a href="#state-section" class="hover:underline">State</a> <span class="text-white">|</span> ';
+        echo '<a href="#conference-section" class="font-bold hover:underline">Conference</a>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+
+        // Main content wrapper
+        echo '<div class="bg-gray-50 min-h-screen py-10 px-4 sm:px-8 font-sans text-gray-800">';
+        echo '<div class="max-w-6xl mx-auto space-y-12">';
+
+        // Optional grid for state cards (currently not rendered)
+        echo '<div id="state-card-grid" class="sdp-card-grid">';
+        // echo self::render_state_cards(); // Uncomment if needed
+        echo '</div>';
+
+        // Optional modal markup for card display (not active unless JS uses it)
+        echo '<div id="sdp-modal" class="sdp-modal">';
+        echo '<div class="sdp-modal-content">';
+        // echo '<span class="sdp-close">&times;</span>'; // Optional close button
+        echo '<div id="sdp-modal-body"></div>';
+        echo '</div></div>';
+
+        // Render each directory section
+        echo StateDirectoryRenderer::render_area_state_leadership();
+        echo StateDirectoryRenderer::render_state_leadership_by_state();
+        echo StateDirectoryRenderer::render_annual_conferences();
+        echo StateDirectoryRenderer::render_executive_officers();
+        echo StateDirectoryRenderer::render_past_presidents();
+
+        echo '</div></div>'; // close content and container wrappers
+
         return ob_get_clean();
     }
 
+    /**
+     * Helper: Get distinct values from a column in a table
+     */
     private static function get_unique_column_values($table, $column) {
         global $wpdb;
         $full_table = $wpdb->prefix . $table;
-        $results = $wpdb->get_col("SELECT DISTINCT $column FROM $full_table WHERE $column IS NOT NULL AND $column != '' ORDER BY $column ASC");
-        return $results;
+        return $wpdb->get_col("SELECT DISTINCT $column FROM $full_table WHERE $column IS NOT NULL AND $column != '' ORDER BY $column ASC");
     }
 
-    public static function render_annual_conferences() {
-        return self::render_cards('sdp_annual_conferences', 'Annual Conferences', [
-            'year' => 'Year',
-            'edition' => 'Edition',
-            'location' => 'Location',
-            'dates' => 'Dates'
-        ], 'year');
-    }
-
-    public static function render_executive_officers() {
-        return self::render_cards('sdp_executive_officers', 'Executive Officers', [
-            'term_year' => 'Term Year',
-            'position' => 'Position',
-            'rank' => 'Rank',
-            'first_name' => 'First Name',
-            'last_name' => 'Last Name',
-            'email' => 'Email',
-            'mobile_phone' => 'Mobile Phone'
-        ], 'term_year');
-    }
-
-    public static function render_area_chairs() {
-        return self::render_cards('sdp_area_chairs', 'Area Chairs', [
-            'position' => 'Position',
-            'rank' => 'Rank',
-            'first_name' => 'First Name',
-            'last_name' => 'Last Name',
-            'email' => 'Email'
-        ], 'position');
-    }
-
-    public static function render_executive_council() {
-        return self::render_cards('sdp_executive_council', 'Executive Council', [
-            'term' => 'Term',
-            'position' => 'Position',
-            'rank' => 'Rank',
-            'first_name' => 'First Name',
-            'last_name' => 'Last Name',
-            'email' => 'Email'
-        ], 'position');
-    }
-
-    public static function render_committees() {
-        return self::render_cards('sdp_committees', 'Committees', [
-            'position' => 'Position',
-            'rank' => 'Rank',
-            'first_name' => 'First Name',
-            'last_name' => 'Last Name',
-            'email' => 'Email'
-        ], 'position');
-    }
-
-    public static function render_auxiliary_exec_board() {
-        return self::render_cards('sdp_auxiliary_executive_board', 'Auxiliary Executive Board', [
-            'title' => 'Title',
-            'year' => 'Year',
-            'name' => 'Name',
-            'phone' => 'Phone',
-            'email' => 'Email'
-        ], 'year');
-    }
-
-    public static function render_past_presidents() {
-        return self::render_cards('sdp_past_presidents', 'Past Presidents', [
-            'term' => 'Term',
-            'rank' => 'Rank',
-            'first_name' => 'First Name',
-            'last_name' => 'Last Name',
-            'email' => 'Email',
-            'status' => 'Status'
-        ], 'term');
-    }
-
-    private static function render_cards($table_name, $section_title, $fields, $filter_field = null) {
-        global $wpdb;
-        $full_table = $wpdb->prefix . $table_name;
-        $results = $wpdb->get_results("SELECT * FROM $full_table");
-
-        ob_start();
-        echo "<div class='sdp-section' data-section='{$section_title}'>";
-        echo "<h2 class='sdp-collapsible'>{$section_title}</h2>";
-
-        if (!empty($results)) {
-            $unique_values = [];
-            if ($filter_field) {
-                $unique_values = array_unique(array_filter(array_map(function ($r) use ($filter_field) {
-                    return $r->$filter_field ?? null;
-                }, $results)));
-                sort($unique_values);
-            }
-
-            if ($filter_field && !empty($unique_values)) {
-                echo "<label>Filter by {$fields[$filter_field]}: ";
-                echo "<select class='sdp-subfilter'>";
-                echo "<option value='all'>All</option>";
-                foreach ($unique_values as $value) {
-                    echo "<option value='" . esc_attr($value) . "'>" . esc_html($value) . "</option>";
-                }
-                echo "</select></label>";
-            }
-
-            echo "<div class='sdp-card-grid'>";
-            foreach ($results as $entry) {
-                $filter_value = $filter_field && isset($entry->$filter_field) ? esc_attr($entry->$filter_field) : '';
-                $cardContent = '';
-                foreach ($fields as $key => $label) {
-                    if (!empty($entry->$key)) {
-                        $cardContent .= "<p><strong>{$label}:</strong> " . esc_html($entry->$key) . "</p>";
-                    }
-                }
-                if ($cardContent) {
-                    echo "<div class='sdp-card'" . ($filter_field ? " data-filter='{$filter_value}'" : "") . ">";
-                    echo $cardContent;
-                    echo "</div>";
-                }
-            }
-            echo "</div>";
-        } else {
-            echo "<p>No entries found.</p>";
-        }
-
-        echo "</div>";
-        return ob_get_clean();
-    }
 }
