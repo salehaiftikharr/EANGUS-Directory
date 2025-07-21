@@ -1,0 +1,272 @@
+/* Hero section */
+.sdp-hero {
+  background: linear-gradient(to right, #0f172a, #1e3a8a); /* from-slate-900 to-blue-900 */
+  color: white;
+  padding: 4rem 1rem;
+}
+.sdp-hero-inner {
+  max-width: 64rem;
+  margin: 0 auto;
+  text-align: center;
+}
+.sdp-hero-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+}
+@media (min-width: 640px) {
+  .sdp-hero-title {
+    font-size: 3rem;
+  }
+}
+.sdp-hero-divider {
+  height: 4px;
+  width: 6rem;
+  background-color: #facc15; /* yellow-400 */
+  margin: 1rem auto;
+}
+.sdp-hero-subtitle {
+  font-size: 1.125rem;
+  font-weight: 300;
+  margin-bottom: 1rem;
+}
+.sdp-hero-links {
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+.sdp-hero-links a {
+  color: white;
+  margin: 0 0.5rem;
+  text-decoration: none;
+}
+.sdp-hero-links a:hover,
+.sdp-hero-links a.active {
+  text-decoration: underline;
+}
+
+/* Main content */
+.sdp-main {
+  background: #f9fafb;
+  min-height: 100vh;
+  padding: 2.5rem 1rem;
+}
+.sdp-main-inner {
+  max-width: 80rem;
+  margin: 0 auto;
+}
+
+/* Modal (you can customize more as needed) */
+.sdp-modal {
+  display: none; /* will be toggled by JS */
+}
+.sdp-modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* ===== Base Reset & Typography ===== */
+body {
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  color: #1f2937;
+  background-color: #f9fafb;
+  margin: 0;
+  padding: 0;
+}
+
+/* ===== Layout Containers ===== */
+.sdp-section {
+  padding: 3rem 1rem;
+  background-color: #ffffff;
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* ===== Section Headings ===== */
+h2, .section-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #111827;
+  margin-bottom: 2rem;
+}
+
+h3, .subsection-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1e40af;
+  margin-bottom: 1.5rem;
+}
+
+/* ===== Toggle Buttons ===== */
+.sdp-toggle-btn {
+  width: 100%;
+  text-align: left;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1d4ed8;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  background-color: #ffffff;
+  margin-bottom: 0.75rem;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  transition: background 0.3s, box-shadow 0.3s;
+  position: relative;
+}
+
+.sdp-toggle-btn:hover {
+  background-color: #f3f4f6;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* Add plus/minus indicators */
+.sdp-toggle-btn::after {
+  content: '+';
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-weight: bold;
+  font-size: 1.25rem;
+  color: #6b7280;
+  transition: transform 0.2s ease;
+}
+
+.sdp-toggle-btn.expanded::after {
+  content: '−';
+}
+
+/* ===== Toggle Content ===== */
+.sdp-toggle-content {
+  margin-top: 1rem;
+  transition: opacity 0.3s ease, max-height 0.3s ease;
+  overflow: hidden;
+  max-height: 1000px; /* Large enough to accommodate content */
+  opacity: 1;
+}
+
+/* FIXED: Simplified hidden class - this is the key fix */
+.sdp-toggle-content.hidden {
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* ===== Cards ===== */
+.sdp-card, .card {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.card-header {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #374151;
+}
+
+/* ===== Card Grid Layout ===== */
+.sdp-card-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.sdp-card {
+  flex: 1 1 calc(50% - 1rem);
+  min-width: 260px;
+}
+
+/* ===== Paragraphs & Text ===== */
+p {
+  margin: 0.25rem 0;
+  font-size: 0.95rem;
+  color: #374151;
+}
+
+p strong {
+  color: #111827;
+}
+
+/* ===== Links ===== */
+a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ===== Filters ===== */
+label {
+  font-weight: 600;
+  margin-right: 0.5rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+select.sdp-subfilter {
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+}
+
+/* ===== Pills ===== */
+.pill {
+  display: inline-block;
+  background-color: #dbeafe;
+  color: #1e3a8a;
+  font-size: 0.875rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+
+/* ===== Alphabet Headers ===== */
+.alpha-heading {
+  font-size: 1.375rem;
+  font-weight: bold;
+  color: #1f2937;
+  border-bottom: 1px solid #d1d5db;
+  padding-bottom: 0.5rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+/* ===== Utility Spacing ===== */
+.mb-4 { margin-bottom: 1rem; }
+.mb-6 { margin-bottom: 1.5rem; }
+.mb-8 { margin-bottom: 2rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-4 { margin-top: 1rem; }
+.mt-10 { margin-top: 2.5rem; }
+
+.space-y-2 > * + * {
+  margin-top: 0.5rem;
+}
+
+.space-y-4 > * + * {
+  margin-top: 1rem;
+}
+
+.space-y-6 > * + * {
+  margin-top: 1.5rem;
+}
+
+.flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.flex-wrap.gap-2 {
+  gap: 0.5rem;
+}
