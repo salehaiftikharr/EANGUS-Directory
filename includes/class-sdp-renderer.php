@@ -37,7 +37,7 @@ class StateDirectoryRenderer {
 
         echo '<section class="sdp-section">';
         echo '<div class="sdp-main-inner">';
-        echo '<h2 id="conference-section" class="section-title">Annual Conferences</h2>';
+        // echo '<h2 id="conference-section" class="section-title">Annual Conferences</h2>';
 
         foreach ($grouped_by_decade as $range => $entries) {
             $target_id = 'decade-' . sanitize_title($range);
@@ -104,7 +104,7 @@ class StateDirectoryRenderer {
         echo '<section class="sdp-section">';
         echo '<div class="sdp-main-inner">';
 
-        echo "<button class='sdp-toggle-btn' data-target-id='executive-officers'>Executive Officers</button>";
+       echo "<button class='sdp-toggle-btn' data-target-id='executive-officers'>Executive Officers</button>";
 
         // Add `hidden` to start collapsed
         echo "<div id='executive-officers' class='sdp-toggle-content hidden'>";
@@ -343,7 +343,7 @@ class StateDirectoryRenderer {
 
         echo '<section class="sdp-section">';
         echo '<div class="sdp-main-inner">';
-        echo '<h2 id="state-section" class="section-title">State Leadership</h2>';
+        // echo '<h2 id="state-section" class="section-title">State Leadership</h2>';
 
         foreach ($grouped_states as $letter => $state_list) {
             echo '<h3 class="alpha-heading">' . esc_html($letter) . '</h3>';
@@ -431,7 +431,7 @@ class StateDirectoryRenderer {
 
         echo '<section class="sdp-section">';
         echo '<div class="sdp-main-inner">';
-        echo '<h2 id="area-section" class="section-title">State Leadership by Area</h2>';
+       // echo '<h2 id="area-section" class="section-title">State Leadership by Area</h2>';
 
         foreach ($areas as $area) {
             $area_label = 'Area ' . strtoupper($area);

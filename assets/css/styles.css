@@ -1,11 +1,19 @@
+/* ===== Final State Directory Plugin CSS ===== */
+
+/* Global settings */
+html {
+  scroll-behavior: smooth;
+}
+
 /* Hero section */
 .sdp-hero {
-  background: linear-gradient(to right, #0f172a, #1e3a8a); /* from-slate-900 to-blue-900 */
+  background: linear-gradient(to right, #0f172a, #1e3a8a);
   color: white;
   padding: 4rem 1rem;
+  width: 100%;
 }
 .sdp-hero-inner {
-  max-width: 64rem;
+  max-width: 1100px;
   margin: 0 auto;
   text-align: center;
 }
@@ -22,13 +30,17 @@
 .sdp-hero-divider {
   height: 4px;
   width: 6rem;
-  background-color: #facc15; /* yellow-400 */
+  background-color: #facc15;
   margin: 1rem auto;
 }
 .sdp-hero-subtitle {
-  font-size: 1.125rem;
-  font-weight: 300;
+  font-size: 1rem;
+  font-weight: 400;
+  color: #9ca3af; /* light gray */
+  margin-top: 0.5rem;
   margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 .sdp-hero-links {
   font-size: 1.125rem;
@@ -39,25 +51,86 @@
   margin: 0 0.5rem;
   text-decoration: none;
 }
-.sdp-hero-links a:hover,
-.sdp-hero-links a.active {
+.sdp-hero-links a:hover {
   text-decoration: underline;
 }
 
-/* Main content */
-.sdp-main {
-  background: #f9fafb;
-  min-height: 100vh;
-  padding: 2.5rem 1rem;
+/* Main layout and containers */
+body {
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  background-color: #f9fafb;
+  color: #1f2937;
+  margin: 0;
+  padding: 0;
 }
-.sdp-main-inner {
-  max-width: 80rem;
-  margin: 0 auto;
+a {
+  color: #2563eb;
+}
+a:hover {
+  text-decoration: underline;
 }
 
-/* Modal (you can customize more as needed) */
+.sdp-main {
+  background: #f9fafb;
+  padding: 3rem 1rem;
+}
+.sdp-main-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.sdp-section {
+  margin: 3rem auto;
+  padding: 0 1rem;
+  max-width: 1000px;
+}
+.sdp-section + .sdp-section {
+  margin-top: 4rem;
+  padding-top: 3rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Headings and Intros */
+.section-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.25rem;
+  border-bottom: 2px solid #2563eb;
+  padding-bottom: 0.25rem;
+}
+
+.sdp-main {
+  background: #f9fafb;
+  padding: 4rem 1rem 3rem;
+}
+
+.sdp-intro {
+  font-size: 1rem;
+  color: #4b5563;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+  max-width: 700px;
+  margin-left: 0.25rem;
+}
+
+.alpha-heading {
+  text-align: left;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1f2937;
+  border-bottom: 1px solid #d1d5db;
+  padding-bottom: 0.5rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+/* Modal */
 .sdp-modal {
-  display: none; /* will be toggled by JS */
+  display: none;
 }
 .sdp-modal-content {
   background: white;
@@ -66,62 +139,26 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-/* ===== Base Reset & Typography ===== */
-body {
-  font-family: 'Segoe UI', Roboto, sans-serif;
-  color: #1f2937;
-  background-color: #f9fafb;
-  margin: 0;
-  padding: 0;
-}
-
-/* ===== Layout Containers ===== */
-.sdp-section {
-  padding: 3rem 1rem;
-  background-color: #ffffff;
-  max-width: 1200px;
-  margin: auto;
-}
-
-/* ===== Section Headings ===== */
-h2, .section-title {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #111827;
-  margin-bottom: 2rem;
-}
-
-h3, .subsection-title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #1e40af;
-  margin-bottom: 1.5rem;
-}
-
-/* ===== Toggle Buttons ===== */
+/* Toggle buttons and effects */
 .sdp-toggle-btn {
-  width: 100%;
-  text-align: left;
-  font-size: 1.125rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.1rem;
   font-weight: 600;
-  color: #1d4ed8;
+  background: #f1f5f9;
   padding: 0.75rem 1rem;
-  border: 1px solid #d1d5db;
   border-radius: 0.5rem;
-  background-color: #ffffff;
-  margin-bottom: 0.75rem;
+  border: 1px solid #cbd5e1;
+  color: #1e40af;
+  transition: background 0.2s;
   cursor: pointer;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
-  transition: background 0.3s, box-shadow 0.3s;
+  width: 100%;
   position: relative;
 }
-
 .sdp-toggle-btn:hover {
-  background-color: #f3f4f6;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  background-color: #e2e8f0;
 }
-
-/* Add plus/minus indicators */
 .sdp-toggle-btn::after {
   content: '+';
   position: absolute;
@@ -131,23 +168,19 @@ h3, .subsection-title {
   font-weight: bold;
   font-size: 1.25rem;
   color: #6b7280;
-  transition: transform 0.2s ease;
 }
-
 .sdp-toggle-btn.expanded::after {
   content: '−';
 }
 
-/* ===== Toggle Content ===== */
+/* Toggle content visibility */
 .sdp-toggle-content {
   margin-top: 1rem;
   transition: opacity 0.3s ease, max-height 0.3s ease;
   overflow: hidden;
-  max-height: 1000px; /* Large enough to accommodate content */
+  max-height: 1000px;
   opacity: 1;
 }
-
-/* FIXED: Simplified hidden class - this is the key fix */
 .sdp-toggle-content.hidden {
   max-height: 0;
   opacity: 0;
@@ -157,7 +190,7 @@ h3, .subsection-title {
   padding-bottom: 0;
 }
 
-/* ===== Cards ===== */
+/* Cards and Layout */
 .sdp-card, .card {
   background-color: #ffffff;
   border: 1px solid #e5e7eb;
@@ -166,61 +199,54 @@ h3, .subsection-title {
   margin-bottom: 1rem;
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
-
 .card-header {
   font-size: 1rem;
   font-weight: bold;
   color: #374151;
 }
-
-/* ===== Card Grid Layout ===== */
 .sdp-card-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
 }
-
 .sdp-card {
   flex: 1 1 calc(50% - 1rem);
   min-width: 260px;
 }
 
-/* ===== Paragraphs & Text ===== */
+/* Lists */
+.sdp-section ul {
+  list-style: none;
+  padding-left: 0;
+}
+.sdp-section ul li {
+  margin-bottom: 1rem;
+}
+
+/* Text */
 p {
   margin: 0.25rem 0;
   font-size: 0.95rem;
   color: #374151;
 }
-
 p strong {
   color: #111827;
 }
 
-/* ===== Links ===== */
-a {
-  color: #2563eb;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-/* ===== Filters ===== */
+/* Filters */
 label {
   font-weight: 600;
   margin-right: 0.5rem;
   display: block;
   margin-bottom: 0.5rem;
 }
-
 select.sdp-subfilter {
   padding: 0.5rem;
   border: 1px solid #d1d5db;
   border-radius: 0.375rem;
 }
 
-/* ===== Pills ===== */
+/* Pills */
 .pill {
   display: inline-block;
   background-color: #dbeafe;
@@ -231,42 +257,20 @@ select.sdp-subfilter {
   box-shadow: 0 1px 2px rgba(0,0,0,0.03);
 }
 
-/* ===== Alphabet Headers ===== */
-.alpha-heading {
-  font-size: 1.375rem;
-  font-weight: bold;
-  color: #1f2937;
-  border-bottom: 1px solid #d1d5db;
-  padding-bottom: 0.5rem;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-}
-
-/* ===== Utility Spacing ===== */
+/* Utility Spacing */
 .mb-4 { margin-bottom: 1rem; }
 .mb-6 { margin-bottom: 1.5rem; }
 .mb-8 { margin-bottom: 2rem; }
 .mt-2 { margin-top: 0.5rem; }
 .mt-4 { margin-top: 1rem; }
 .mt-10 { margin-top: 2.5rem; }
-
-.space-y-2 > * + * {
-  margin-top: 0.5rem;
-}
-
-.space-y-4 > * + * {
-  margin-top: 1rem;
-}
-
-.space-y-6 > * + * {
-  margin-top: 1.5rem;
-}
-
+.space-y-2 > * + * { margin-top: 0.5rem; }
+.space-y-4 > * + * { margin-top: 1rem; }
+.space-y-6 > * + * { margin-top: 1.5rem; }
 .flex-wrap {
   display: flex;
   flex-wrap: wrap;
 }
-
 .flex-wrap.gap-2 {
   gap: 0.5rem;
 }
