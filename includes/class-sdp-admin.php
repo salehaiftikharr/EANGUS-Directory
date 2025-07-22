@@ -27,10 +27,10 @@ class StateDirectoryAdmin {
         // Define tabs mapped to 'type' values
         $tabs = [
             'exec_officer'     => 'Executive Officers',
-            'conference'       => 'Annual Conferences',
-            'past_president'   => 'Past Presidents',
-            'state_council'    => 'State Leadership',
             'area_chair'       => 'Area Chairs',
+            'state_council'    => 'State Leadership',
+            'past_president'   => 'Past Presidents',
+            'conference'       => 'Annual Conferences',
         ];
 
         $active_tab = $_GET['tab'] ?? 'exec_officer';
