@@ -31,15 +31,15 @@ class StateDirectoryShortcode {
 
         // Area Leadership
         echo '<section class="sdp-section">';
-        echo '<h2 id="area-section" class="section-title">State Leadership by Area</h2>';
+        echo '<h2 id="area-section" class="section-title">Leadership by Area</h2>';
         echo '<p class="sdp-intro">Explore leadership organized by geographical area, including area chairs and directors.</p>';
         echo StateDirectoryRenderer::render_area_state_leadership();
         echo '</section>';
 
         // State Leadership
         echo '<section class="sdp-section">';
-        echo '<h2 id="state-section" class="section-title">State Leadership</h2>';
-        echo '<p class="sdp-intro">View council members for each individual state’s National Guard association.</p>';
+        echo '<h2 id="state-section" class="section-title">Leadership by State</h2>';
+        echo '<p class="sdp-intro">View EANGUS council members for each individual state.</p>';
         echo StateDirectoryRenderer::render_state_leadership_by_state();
         echo '</section>';
 
@@ -53,7 +53,7 @@ class StateDirectoryShortcode {
         // Executive Officers
         echo '<section class="sdp-section">';
         echo '<h2 class="section-title">Executive Officers</h2>';
-        echo '<p class="sdp-intro">Current national executive officers serving the EANGUS organization.</p>';
+        echo '<p class="sdp-intro">Current national executive officers serving EANGUS.</p>';
         echo StateDirectoryRenderer::render_executive_officers();
         echo '</section>';
 
