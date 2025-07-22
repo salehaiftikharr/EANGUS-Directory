@@ -112,7 +112,6 @@ class StateDirectoryAdmin {
 
                 $value = $_POST[$field];
 
-                // Field-type-specific sanitization
                 if (str_contains($field, 'email')) {
                     $data[$field] = sanitize_email($value);
                 } elseif (in_array($field, ['term_start', 'term_end'])) {
@@ -122,13 +121,52 @@ class StateDirectoryAdmin {
                 }
             }
 
-            $wpdb->insert($table, $data);
+            // Define keys for uniqueness checks depending on section type
+            $where = null;
+            if ($type === 'exec_officer') {
+                $where = [
+                    'type'     => $type,
+                    'position' => $data['position'] ?? '',
+                ];
+            } elseif ($type === 'state_council') {
+                $where = [
+                    'type'     => $type,
+                    'state'    => $data['state'] ?? '',
+                    'position' => $data['position'] ?? '',
+                ];
+            } elseif ($type === 'area_chair') {
+                $where = [
+                    'type'     => $type,
+                    'area'     => $data['area'] ?? '',
+                    'position' => $data['position'] ?? '',
+                ];
+            }
+
+            // Try update if matching record exists
+            $updated = false;
+            if ($where) {
+                $existing_id = $wpdb->get_var($wpdb->prepare(
+                    "SELECT id FROM $table WHERE " . implode(' AND ', array_map(fn($k) => "$k = %s", array_keys($where))),
+                    ...array_values($where)
+                ));
+
+                if ($existing_id) {
+                    $wpdb->update($table, $data, ['id' => $existing_id]);
+                    $updated = true;
+                }
+            }
+
+            // If not updated, insert new
+            if (!$updated) {
+                $wpdb->insert($table, $data);
+            }
 
             if ($wpdb->last_error) {
                 echo '<div class="notice notice-error"><p><strong>DB Error:</strong> ' . esc_html($wpdb->last_error) . '</p></div>';
                 echo '<pre>' . print_r($data, true) . '</pre>';
             } else {
-                echo '<div class="notice notice-success is-dismissible"><p>Entry added successfully.</p></div>';
+                $msg = $updated ? 'Entry updated successfully.' : 'Entry added successfully.';
+                echo '<div class="notice notice-success is-dismissible"><p>' . $msg . '</p></div>';
                 echo '<pre>' . print_r($data, true) . '</pre>';
             }
         }
