@@ -6,17 +6,15 @@
 class StateDirectoryAdmin {
 
     /**
-     * Registers the admin menu item in the WordPress dashboard.
+     * Registers the admin menu item as a submenu under Settings.
      */
     public static function add_menu() {
-        add_menu_page(
-            'Leadership Directory',
-            'Leadership Directory',
-            'manage_options',
-            'leadership-directory',
-            [__CLASS__, 'render_page'],
-            'dashicons-id',
-            6
+        add_options_page(
+            'Leadership Directory',           // Page title
+            'Leadership Directory',           // Menu title
+            'manage_options',                 // Capability
+            'leadership-directory',           // Menu slug
+            [__CLASS__, 'render_page']        // Callback function
         );
     }
 
@@ -36,7 +34,8 @@ class StateDirectoryAdmin {
         $active_tab = $_GET['tab'] ?? 'exec_officer';
 
         echo '<div class="wrap">';
-        echo '<h1 class="sdp-title">EANGUS Leadership Directory</h1>';
+        echo '<h1 class="wp-heading-inline">EANGUS Leadership Directory Settings</h1>';
+        echo '<p>Manage your EANGUS Leadership Directory entries from this settings page.</p>';
 
         // Tab navigation
         echo '<h2 class="nav-tab-wrapper">';
