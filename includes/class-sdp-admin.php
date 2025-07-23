@@ -47,9 +47,13 @@ class StateDirectoryAdmin {
 
         echo '<div class="sdp-card-container">';
 
-        // Show the correct form
+        // Show the correct form with instructions
         switch ($active_tab) {
             case 'exec_officer':
+                self::render_section_header(
+                    'Manage Executive Officers',
+                    'Add or update executive officer information. Duplicate positions will be updated automatically.'
+                );
                 self::render_form('exec_officer', [
                     'term_start', 'term_end', 'position', 'rank', 'first_name', 'last_name',
                     'email', 'phone_mobile', 'address', 'phone_office', 'phone_fax', 'phone_home'
@@ -57,34 +61,60 @@ class StateDirectoryAdmin {
                 break;
 
             case 'conference':
+                self::render_section_header(
+                    'Manage Annual Conferences',
+                    'Add conference information including location and date ranges. Use format "Month DD-DD, YYYY" for date ranges.'
+                );
                 self::render_form('conference', [
                     'term_start', 'edition', 'location', 'date_range'
                 ]);
                 break;
 
             case 'past_president':
+                self::render_section_header(
+                    'Manage Past Presidents',
+                    'Add past president information. Use the "Position" field for status (e.g., "Deceased", "Active").'
+                );
                 self::render_form('past_president', [
                     'term_start', 'term_end', 'rank', 'first_name', 'last_name',
-                    'email', 'phone_home', 'phone_mobile', 'position' // position = status
+                    'email', 'phone_home', 'phone_mobile', 'position'
                 ]);
                 break;
 
             case 'state_council':
+                self::render_section_header(
+                    'Manage State Leadership',
+                    'Add state council members. Each state/position combination should be unique. Use 2-letter state codes (e.g., "CA", "TX").'
+                );
                 self::render_form('state_council', [
                     'state', 'area', 'position', 'rank', 'first_name', 'last_name',
                     'email', 'phone_mobile', 'term_start'
                 ]);
                 break;
+                
             case 'area_chair':
+                self::render_section_header(
+                    'Manage Area Chairs',
+                    'Add area chair information. Each area/position combination should be unique. Use area numbers (e.g., "1", "2", "3").'
+                );
                 self::render_form('area_chair', [
                      'area', 'position', 'rank', 'first_name', 'last_name',
                      'email', 'phone_mobile'
                  ]);
-        break;
-
+                break;
         }
 
         echo '</div>';
+        echo '</div>';
+    }
+
+    /**
+     * Renders a section header with title and instructions
+     */
+    private static function render_section_header($title, $instructions) {
+        echo '<div style="margin: 20px 0; padding: 15px; background: #f9f9f9; border-left: 4px solid #0073aa;">';
+        echo '<h3 style="margin-top: 0;">' . esc_html($title) . '</h3>';
+        echo '<p style="margin-bottom: 0; color: #666;">' . esc_html($instructions) . '</p>';
         echo '</div>';
     }
 
@@ -160,13 +190,12 @@ class StateDirectoryAdmin {
                 $wpdb->insert($table, $data);
             }
 
+            // Show success or error message (without debug data)
             if ($wpdb->last_error) {
-                echo '<div class="notice notice-error"><p><strong>DB Error:</strong> ' . esc_html($wpdb->last_error) . '</p></div>';
-                echo '<pre>' . print_r($data, true) . '</pre>';
+                echo '<div class="notice notice-error"><p><strong>Error:</strong> There was a problem saving the entry. Please check your data and try again.</p></div>';
             } else {
-                $msg = $updated ? 'Entry updated successfully.' : 'Entry added successfully.';
+                $msg = $updated ? 'Entry updated successfully!' : 'Entry added successfully!';
                 echo '<div class="notice notice-success is-dismissible"><p>' . $msg . '</p></div>';
-                echo '<pre>' . print_r($data, true) . '</pre>';
             }
         }
 
@@ -176,15 +205,15 @@ class StateDirectoryAdmin {
 
         foreach ($fields as $field) {
             echo '<tr>';
-            echo '<th><label for="' . esc_attr($field) . '">' . ucwords(str_replace('_', ' ', $field)) . '</label></th>';
+            echo '<th><label for="' . esc_attr($field) . '">' . self::get_field_label($field) . '</label></th>';
             echo '<td>';
 
             if ($field === 'area' || $field === 'state') {
-                echo '<input type="text" name="' . esc_attr($field) . '" class="regular-text">';
+                echo '<input type="text" name="' . esc_attr($field) . '" class="regular-text" placeholder="' . self::get_field_placeholder($field) . '">';
             } elseif (str_contains($field, 'address') || str_contains($field, 'notes')) {
-                echo '<textarea name="' . esc_attr($field) . '" class="large-text"></textarea>';
+                echo '<textarea name="' . esc_attr($field) . '" class="large-text" placeholder="' . self::get_field_placeholder($field) . '"></textarea>';
             } else {
-                echo '<input type="text" name="' . esc_attr($field) . '" class="regular-text">';
+                echo '<input type="text" name="' . esc_attr($field) . '" class="regular-text" placeholder="' . self::get_field_placeholder($field) . '">';
             }
 
             echo '</td>';
@@ -195,5 +224,49 @@ class StateDirectoryAdmin {
         echo '<p><input type="submit" name="' . esc_attr($submit_key) . '" class="button button-primary" value="Add Entry"></p>';
         echo '</form>';
         echo '</div>';
+    }
+
+    /**
+     * Get user-friendly field labels
+     */
+    private static function get_field_label($field) {
+        $labels = [
+            'term_start' => 'Term Start Year',
+            'term_end' => 'Term End Year',
+            'first_name' => 'First Name',
+            'last_name' => 'Last Name',
+            'phone_office' => 'Office Phone',
+            'phone_mobile' => 'Mobile Phone',
+            'phone_home' => 'Home Phone',
+            'phone_fax' => 'Fax Number',
+            'date_range' => 'Conference Dates',
+        ];
+
+        return $labels[$field] ?? ucwords(str_replace('_', ' ', $field));
+    }
+
+    /**
+     * Get helpful placeholders for form fields
+     */
+    private static function get_field_placeholder($field) {
+        $placeholders = [
+            'state' => 'e.g., California, Texas, New York',
+            'area' => 'e.g., I, II, III',
+            'term_start' => 'e.g., 2024',
+            'term_end' => 'e.g., 2026',
+            'email' => 'user@example.com',
+            'phone_office' => '(555) 123-4567',
+            'phone_mobile' => '(555) 123-4567',
+            'phone_home' => '(555) 123-4567',
+            'phone_fax' => '(555) 123-4567',
+            'date_range' => 'e.g., August 15-18, 2024',
+            'position' => 'e.g., President, Vice President',
+            'rank' => 'e.g., CMSgt, MSgt, SMSgt',
+            'edition' => 'e.g., 53rd Annual Conference',
+            'location' => 'e.g., Holiday Inn - Sioux Falls, SD',
+            'address' => 'Full mailing address',
+        ];
+
+        return $placeholders[$field] ?? '';
     }
 }
