@@ -50,6 +50,78 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
+  // Back to Top Button Functionality
+  function initBackToTop() {
+    // Create the back to top button
+    const backToTopBtn = document.createElement('button');
+    backToTopBtn.className = 'sdp-back-to-top';
+    backToTopBtn.setAttribute('aria-label', 'Back to top');
+    backToTopBtn.title = 'Back to Filter Options';
+    
+    // Add the button to the page
+    document.body.appendChild(backToTopBtn);
+
+    // Show/hide button based on scroll position
+    function toggleBackToTopVisibility() {
+      const heroSection = document.querySelector('.sdp-hero');
+      if (!heroSection) return;
+
+      const heroBottom = heroSection.offsetTop + heroSection.offsetHeight;
+      const scrollPosition = window.pageYOffset;
+      
+      // Show button when user scrolls past the hero section
+      if (scrollPosition > heroBottom + 100) {
+        backToTopBtn.classList.add('visible');
+      } else {
+        backToTopBtn.classList.remove('visible');
+      }
+    }
+
+    // Scroll to top when button is clicked
+    backToTopBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      // Find the hero section with filter options
+      const heroSection = document.querySelector('.sdp-hero');
+      const filterSection = document.querySelector('.sdp-hero-subtitle');
+      
+      if (filterSection) {
+        // Scroll to the "FILTER BY" section specifically
+        filterSection.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'center' 
+        });
+      } else if (heroSection) {
+        // Fallback to hero section
+        heroSection.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      } else {
+        // Ultimate fallback to top of page
+        window.scrollTo({ 
+          top: 0, 
+          behavior: 'smooth' 
+        });
+      }
+
+      // Add a subtle animation feedback
+      backToTopBtn.style.transform = 'scale(0.9)';
+      setTimeout(() => {
+        backToTopBtn.style.transform = '';
+      }, 150);
+    });
+
+    // Listen for scroll events
+    window.addEventListener('scroll', toggleBackToTopVisibility);
+    
+    // Check initial state
+    toggleBackToTopVisibility();
+  }
+
+  // Initialize back to top functionality
+  initBackToTop();
+
   // Optional: Accordion behavior (close other sections when opening a new one)
   // This is a separate event listener to handle accordion behavior
   const enableAccordion = false; // Set to true if you want accordion behavior
