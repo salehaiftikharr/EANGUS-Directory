@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Class StateDirectoryShortcode
- * Handles front-end rendering of various sections using shortcodes
+ * Enhanced Class StateDirectoryShortcode
+ * Handles front-end rendering with better theme isolation
  */
 class StateDirectoryShortcode {
 
@@ -10,6 +10,9 @@ class StateDirectoryShortcode {
         global $wpdb;
 
         ob_start();
+
+        // Wrap everything in our container class for CSS isolation
+        echo '<div class="sdp-container">';
 
         // Hero section with title and tab links
         echo '<div class="sdp-hero">';
@@ -39,14 +42,14 @@ class StateDirectoryShortcode {
         // State Leadership
         echo '<section class="sdp-section">';
         echo '<h2 id="state-section" class="section-title">Leadership by State</h2>';
-        echo '<p class="sdp-intro">View EANGUS leadership for each individual chapter.</p>';
+        echo '<p class="sdp-intro">View EANGUS council members for each individual chapter.</p>';
         echo StateDirectoryRenderer::render_state_leadership_by_state();
         echo '</section>';
 
         // Annual Conferences
         echo '<section class="sdp-section">';
         echo '<h2 id="conference-section" class="section-title">Annual Conferences</h2>';
-        echo '<p class="sdp-intro">Historical listing of past EANGUS Annual Conferences, grouped by decade.</p>';
+        echo '<p class="sdp-intro">Historical listing of past EANGUS Annual Conferences.</p>';
         echo StateDirectoryRenderer::render_annual_conferences();
         echo '</section>';
 
@@ -66,6 +69,7 @@ class StateDirectoryShortcode {
 
         echo '</div>'; // .sdp-main-inner
         echo '</div>'; // .sdp-main
+        echo '</div>'; // .sdp-container - Close the wrapper
 
         return ob_get_clean();
     }

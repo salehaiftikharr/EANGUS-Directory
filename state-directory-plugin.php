@@ -129,23 +129,92 @@ function sdp_init() {
 }
 
 /**
- * Enqueue plugin assets
+ * Enhanced asset enqueuing with higher priority and better theme override protection
  */
-add_action('wp_enqueue_scripts', 'sdp_enqueue_assets');
+add_action('wp_enqueue_scripts', 'sdp_enqueue_assets', 25); // Higher priority to load after theme
 
 function sdp_enqueue_assets() {
-    wp_enqueue_style(
-        'sdp-styles',
-        plugin_dir_url(__FILE__) . 'assets/css/styles.css',
-        [],
-        '1.1'
-    );
+    // Only enqueue on pages that contain our shortcode or if we detect it's needed
+    global $post;
+    
+    $should_enqueue = false;
+    
+    // Check if current page/post contains the shortcode
+    if (is_a($post, 'WP_Post') && has_shortcode($post->post_content, 'state_directory')) {
+        $should_enqueue = true;
+    }
+    
+    // Also enqueue if we're on a page where the shortcode might be used via widgets, etc.
+    if (is_page() || is_single()) {
+        $should_enqueue = true;
+    }
+    
+    if ($should_enqueue) {
+        // Enqueue styles with dependencies on common theme stylesheets to ensure loading order
+        wp_enqueue_style(
+            'sdp-styles',
+            plugin_dir_url(__FILE__) . 'assets/css/styles.css',
+            array(), // You can add theme stylesheet handles here if known
+            '1.1.1', // Increment version when updating CSS
+            'all'
+        );
 
-    wp_enqueue_script(
-        'sdp-script',
-        plugin_dir_url(__FILE__) . 'assets/js/script.js',
-        [],
-        '1.1',
-        true
-    );
+        // Add inline CSS for extra protection against theme overrides
+        $inline_css = '
+        .sdp-container * {
+            box-sizing: border-box !important;
+        }
+        .sdp-container {
+            isolation: isolate;
+            contain: layout style;
+        }';
+        
+        wp_add_inline_style('sdp-styles', $inline_css);
+
+        wp_enqueue_script(
+            'sdp-script',
+            plugin_dir_url(__FILE__) . 'assets/js/script.js',
+            array('jquery'), // Add jQuery dependency if needed
+            '1.1.1',
+            true
+        );
+    }
+}
+
+/**
+ * Add CSS with very high priority to override theme styles
+ */
+add_action('wp_head', 'sdp_add_critical_css', 999);
+
+function sdp_add_critical_css() {
+    global $post;
+    
+    // Only add on pages with our shortcode
+    if (is_a($post, 'WP_Post') && has_shortcode($post->post_content, 'state_directory')) {
+        echo '<style id="sdp-critical-css">
+        .sdp-container {
+            font-family: "Segoe UI", Roboto, -apple-system, BlinkMacSystemFont, sans-serif !important;
+            line-height: 1.6 !important;
+            color: #1f2937 !important;
+        }
+        .sdp-container * {
+            box-sizing: border-box !important;
+        }
+        </style>';
+    }
+}
+
+/**
+ * Add custom body class when our shortcode is present
+ */
+add_filter('body_class', 'sdp_add_body_class');
+
+function sdp_add_body_class($classes) {
+    global $post;
+    
+    if (is_a($post, 'WP_Post') && has_shortcode($post->post_content, 'state_directory')) {
+        $classes[] = 'has-sdp-directory';
+    }
+    
+    return $classes;
 }
