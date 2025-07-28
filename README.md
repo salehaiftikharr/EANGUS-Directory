@@ -148,5 +148,6 @@ Intern | Enlisted Association of the National Guard of the United States (EANGUS
 
 ## Version History
 
+- **v1.2**: Enhanced Filters and UI enhancements.
 - **v1.1**: Unified database structure, improved admin interface, enhanced front-end interactions
 - **v1.0**: Initial release with basic directory functionality
