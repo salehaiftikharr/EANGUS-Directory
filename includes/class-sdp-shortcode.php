@@ -39,7 +39,7 @@ class StateDirectoryShortcode {
         // State Leadership
         echo '<section class="sdp-section">';
         echo '<h2 id="state-section" class="section-title">Leadership by State</h2>';
-        echo '<p class="sdp-intro">View EANGUS council members for each individual state.</p>';
+        echo '<p class="sdp-intro">View EANGUS leadership for each individual chapter.</p>';
         echo StateDirectoryRenderer::render_state_leadership_by_state();
         echo '</section>';
 

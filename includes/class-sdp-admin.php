@@ -84,7 +84,7 @@ class StateDirectoryAdmin {
             case 'state_council':
                 self::render_section_header(
                     'Manage State Leadership',
-                    'Add state council members. Each state/position combination should be unique. Use 2-letter state codes (e.g., "CA", "TX").'
+                    'Add state council members. Each state/position combination should be unique. Use full state names (e.g., "California", "Texas").'
                 );
                 self::render_form('state_council', [
                     'state', 'area', 'position', 'rank', 'first_name', 'last_name',
@@ -95,7 +95,7 @@ class StateDirectoryAdmin {
             case 'area_chair':
                 self::render_section_header(
                     'Manage Area Chairs',
-                    'Add area chair information. Each area/position combination should be unique. Use area numbers (e.g., "1", "2", "3").'
+                    'Add area chair information. Each area/position combination should be unique. Use area numbers (e.g., "I", "II", "III").'
                 );
                 self::render_form('area_chair', [
                      'area', 'position', 'rank', 'first_name', 'last_name',
