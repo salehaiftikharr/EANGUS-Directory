@@ -80,6 +80,9 @@
 .sdp-container .sdp-hero-links {
   font-size: 1.125rem !important;
   font-weight: 500 !important;
+  line-height: 1.8 !important;
+  max-width: 900px !important;
+  margin: 0 auto !important;
 }
 
 .sdp-container .sdp-hero-links a {
@@ -88,12 +91,39 @@
   text-decoration: none !important;
   border: none !important;
   background: transparent !important;
-  padding: 0 !important;
+  padding: 0.25rem 0.5rem !important;
+  border-radius: 0.25rem !important;
+  transition: background-color 0.2s !important;
+  display: inline-block !important;
 }
 
 .sdp-container .sdp-hero-links a:hover {
-  text-decoration: underline !important;
+  text-decoration: none !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
   color: white !important;
+}
+
+.sdp-container .sdp-hero-links span {
+  color: #9ca3af !important;
+  margin: 0 0.25rem !important;
+}
+
+/* Responsive hero navigation */
+@media (max-width: 768px) {
+  .sdp-container .sdp-hero-links {
+    font-size: 1rem !important;
+    line-height: 2 !important;
+  }
+  
+  .sdp-container .sdp-hero-links a {
+    display: inline-block !important;
+    margin: 0.25rem 0.25rem !important;
+    padding: 0.5rem 0.75rem !important;
+  }
+  
+  .sdp-container .sdp-hero-links span {
+    display: none !important;
+  }
 }
 
 /* Main layout and containers */

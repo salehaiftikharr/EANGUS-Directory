@@ -23,7 +23,9 @@ class StateDirectoryShortcode {
         echo '<div class="sdp-hero-links">';
         echo '<a href="#area-section">Area</a> <span>|</span> ';
         echo '<a href="#state-section">State</a> <span>|</span> ';
-        echo '<a href="#conference-section" class="active">Conference</a>';
+        echo '<a href="#conference-section">Conference</a> <span>|</span> ';
+        echo '<a href="#executive-section">Executive Officers</a> <span>|</span> ';
+        echo '<a href="#past-presidents-section">Past Presidents</a>';
         echo '</div>';
         echo '</div>';
         echo '</div>';
@@ -55,14 +57,14 @@ class StateDirectoryShortcode {
 
         // Executive Officers
         echo '<section class="sdp-section">';
-        echo '<h2 class="section-title">Executive Officers</h2>';
+        echo '<h2 id="executive-section" class="section-title">Executive Officers</h2>';
         echo '<p class="sdp-intro">Current national executive officers serving EANGUS.</p>';
         echo StateDirectoryRenderer::render_executive_officers();
         echo '</section>';
 
         // Past Presidents
         echo '<section class="sdp-section">';
-        echo '<h2 class="section-title">Past Presidents</h2>';
+        echo '<h2 id="past-presidents-section" class="section-title">Past Presidents</h2>';
         echo '<p class="sdp-intro">A complete record of past presidents who have served in EANGUS leadership.</p>';
         echo StateDirectoryRenderer::render_past_presidents();
         echo '</section>';

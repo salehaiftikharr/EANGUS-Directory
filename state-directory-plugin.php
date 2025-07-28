@@ -2,7 +2,7 @@
 /*
 Plugin Name: State Directory Plugin
 Description: A plugin to manage and display a directory of EANGUS leadership data.
-Version: 1.1
+Version: 1.2
 Author: Saleha Iftikhar
 */
 
