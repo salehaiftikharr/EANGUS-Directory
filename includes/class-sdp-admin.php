@@ -125,107 +125,133 @@ class StateDirectoryAdmin {
      * @param array  $fields  The fields to render in the form
      */
     private static function render_form($type, $fields) {
-        global $wpdb;
-        $table = $wpdb->prefix . 'eangus_directory';
-        $submit_key = 'sdp_submit_' . $type;
+    global $wpdb;
+    $table = $wpdb->prefix . 'eangus_directory';
+    $submit_key = 'sdp_submit_' . $type;
 
-        // Handle submission
-        if (isset($_POST[$submit_key])) {
-            $data = ['type' => $type];
-
-            foreach ($fields as $field) {
-                if (!isset($_POST[$field])) {
-                    $data[$field] = '';
-                    continue;
-                }
-
-                $value = $_POST[$field];
-
-                if (str_contains($field, 'email')) {
-                    $data[$field] = sanitize_email($value);
-                } elseif (in_array($field, ['term_start', 'term_end'])) {
-                    $data[$field] = intval($value);
-                } else {
-                    $data[$field] = sanitize_text_field($value);
-                }
-            }
-
-            // Define keys for uniqueness checks depending on section type
-            $where = null;
-            if ($type === 'exec_officer') {
-                $where = [
-                    'type'     => $type,
-                    'position' => $data['position'] ?? '',
-                ];
-            } elseif ($type === 'state_council') {
-                $where = [
-                    'type'     => $type,
-                    'state'    => $data['state'] ?? '',
-                    'position' => $data['position'] ?? '',
-                ];
-            } elseif ($type === 'area_chair') {
-                $where = [
-                    'type'     => $type,
-                    'area'     => $data['area'] ?? '',
-                    'position' => $data['position'] ?? '',
-                ];
-            }
-
-            // Try update if matching record exists
-            $updated = false;
-            if ($where) {
-                $existing_id = $wpdb->get_var($wpdb->prepare(
-                    "SELECT id FROM $table WHERE " . implode(' AND ', array_map(fn($k) => "$k = %s", array_keys($where))),
-                    ...array_values($where)
-                ));
-
-                if ($existing_id) {
-                    $wpdb->update($table, $data, ['id' => $existing_id]);
-                    $updated = true;
-                }
-            }
-
-            // If not updated, insert new
-            if (!$updated) {
-                $wpdb->insert($table, $data);
-            }
-
-            // Show success or error message (without debug data)
-            if ($wpdb->last_error) {
-                echo '<div class="notice notice-error"><p><strong>Error:</strong> There was a problem saving the entry. Please check your data and try again.</p></div>';
-            } else {
-                $msg = $updated ? 'Entry updated successfully!' : 'Entry added successfully!';
-                echo '<div class="notice notice-success is-dismissible"><p>' . $msg . '</p></div>';
-            }
-        }
-
-        echo '<div class="directory-section">';
-        echo '<form method="post"><table class="form-table">';
-        echo '<input type="hidden" name="type" value="' . esc_attr($type) . '">';
+    // Handle submission
+    if (isset($_POST[$submit_key])) {
+        $data = ['type' => $type];
 
         foreach ($fields as $field) {
-            echo '<tr>';
-            echo '<th><label for="' . esc_attr($field) . '">' . self::get_field_label($field) . '</label></th>';
-            echo '<td>';
-
-            if ($field === 'area' || $field === 'state') {
-                echo '<input type="text" name="' . esc_attr($field) . '" class="regular-text" placeholder="' . self::get_field_placeholder($field) . '">';
-            } elseif (str_contains($field, 'address') || str_contains($field, 'notes')) {
-                echo '<textarea name="' . esc_attr($field) . '" class="large-text" placeholder="' . self::get_field_placeholder($field) . '"></textarea>';
-            } else {
-                echo '<input type="text" name="' . esc_attr($field) . '" class="regular-text" placeholder="' . self::get_field_placeholder($field) . '">';
+            if (!isset($_POST[$field])) {
+                $data[$field] = '';
+                continue;
             }
 
-            echo '</td>';
-            echo '</tr>';
+            $value = $_POST[$field];
+
+            if (str_contains($field, 'email')) {
+                $data[$field] = sanitize_email($value);
+            } elseif (in_array($field, ['term_start', 'term_end'])) {
+                $data[$field] = intval($value);
+            } else {
+                $data[$field] = sanitize_text_field($value);
+            }
         }
 
-        echo '</table>';
-        echo '<p><input type="submit" name="' . esc_attr($submit_key) . '" class="button button-primary" value="Add Entry"></p>';
-        echo '</form>';
-        echo '</div>';
+        // Enhanced uniqueness checks for ALL types
+        $where = null;
+        $updated = false;
+        
+        switch ($type) {
+            case 'exec_officer':
+                $where = [
+                    'type' => $type,
+                    'position' => $data['position'] ?? '',
+                ];
+                break;
+                
+            case 'state_council':
+                $where = [
+                    'type' => $type,
+                    'state' => $data['state'] ?? '',
+                    'position' => $data['position'] ?? '',
+                ];
+                break;
+                
+            case 'area_chair':
+                $where = [
+                    'type' => $type,
+                    'area' => $data['area'] ?? '',
+                    'position' => $data['position'] ?? '',
+                ];
+                break;
+                
+            case 'past_president':
+                // Check by name and term_start to avoid duplicates
+                $where = [
+                    'type' => $type,
+                    'first_name' => $data['first_name'] ?? '',
+                    'last_name' => $data['last_name'] ?? '',
+                    'term_start' => $data['term_start'] ?? 0,
+                ];
+                break;
+                
+            case 'conference':
+                // Check by year (term_start) to avoid duplicate conferences
+                $where = [
+                    'type' => $type,
+                    'term_start' => $data['term_start'] ?? 0,
+                ];
+                break;
+        }
+
+        // Try update if matching record exists
+        if ($where) {
+            $where_clause = implode(' AND ', array_map(fn($k) => "$k = %s", array_keys($where)));
+            $existing_id = $wpdb->get_var($wpdb->prepare(
+                "SELECT id FROM $table WHERE " . $where_clause,
+                ...array_values($where)
+            ));
+
+            if ($existing_id) {
+                $wpdb->update($table, $data, ['id' => $existing_id]);
+                $updated = true;
+            }
+        }
+
+        // If not updated, insert new
+        if (!$updated) {
+            $wpdb->insert($table, $data);
+        }
+
+        // Show success or error message
+        if ($wpdb->last_error) {
+            echo '<div class="notice notice-error"><p><strong>Error:</strong> ' . esc_html($wpdb->last_error) . '</p></div>';
+        } else {
+            $msg = $updated ? 'Entry updated successfully!' : 'Entry added successfully!';
+            echo '<div class="notice notice-success is-dismissible"><p>' . $msg . '</p></div>';
+        }
     }
 
+    // Rest of the form rendering code remains the same...
+    echo '<div class="directory-section">';
+    echo '<form method="post"><table class="form-table">';
+    echo '<input type="hidden" name="type" value="' . esc_attr($type) . '">';
+
+    foreach ($fields as $field) {
+        echo '<tr>';
+        echo '<th><label for="' . esc_attr($field) . '">' . self::get_field_label($field) . '</label></th>';
+        echo '<td>';
+
+        if ($field === 'area' || $field === 'state') {
+            echo '<input type="text" name="' . esc_attr($field) . '" class="regular-text" placeholder="' . self::get_field_placeholder($field) . '">';
+        } elseif (str_contains($field, 'address') || str_contains($field, 'notes')) {
+            echo '<textarea name="' . esc_attr($field) . '" class="large-text" placeholder="' . self::get_field_placeholder($field) . '"></textarea>';
+        } else {
+            echo '<input type="text" name="' . esc_attr($field) . '" class="regular-text" placeholder="' . self::get_field_placeholder($field) . '">';
+        }
+
+        echo '</td>';
+        echo '</tr>';
+    }
+
+    echo '</table>';
+    echo '<p><input type="submit" name="' . esc_attr($submit_key) . '" class="button button-primary" value="Add Entry"></p>';
+    echo '</form>';
+    echo '</div>';
+    }
     /**
      * Get user-friendly field labels
      */

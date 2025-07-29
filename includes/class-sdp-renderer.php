@@ -12,67 +12,73 @@ class StateDirectoryRenderer {
      * @return string The HTML content for the annual conferences section.
      */
     public static function render_annual_conferences() {
-        global $wpdb;
+    global $wpdb;
 
-        // Query unified table for all conference entries
-        $table = $wpdb->prefix . 'eangus_directory';
-        $results = $wpdb->get_results("
-            SELECT term_start AS year, edition, location, date_range
-            FROM {$table}
-            WHERE type = 'conference'
-            ORDER BY term_start ASC
-        ");
+    // Query unified table for all conference entries
+    $table = $wpdb->prefix . 'eangus_directory';
+    $results = $wpdb->get_results("
+        SELECT term_start AS year, edition, location, date_range
+        FROM {$table}
+        WHERE type = 'conference'
+        ORDER BY term_start DESC
+    ");
 
-        // Group entries by decade
-        $grouped_by_decade = [];
-        foreach ($results as $entry) {
-            if (!is_numeric($entry->year)) continue;
+    // Group entries by decade
+    $grouped_by_decade = [];
+    foreach ($results as $entry) {
+        if (!is_numeric($entry->year)) continue;
 
-            $decade_start = floor($entry->year / 10) * 10;
-            $range_label = "{$decade_start}–" . ($decade_start + 9);
-            $grouped_by_decade[$range_label][] = $entry;
-        }
+        $decade_start = floor($entry->year / 10) * 10;
+        $range_label = "{$decade_start}–" . ($decade_start + 9);
+        $grouped_by_decade[$range_label][] = $entry;
+    }
 
-        ob_start();
+    // Sort decades by most recent first
+    uksort($grouped_by_decade, function($a, $b) {
+        $decade_a = (int)substr($a, 0, 4);
+        $decade_b = (int)substr($b, 0, 4);
+        
+        return $decade_b - $decade_a; // DESC order (newest first)
+    });
 
-        echo '<section class="sdp-section">';
-        echo '<div class="sdp-main-inner">';
-        // echo '<h2 id="conference-section" class="section-title">Annual Conferences</h2>';
+    ob_start();
 
-        foreach ($grouped_by_decade as $range => $entries) {
-            $target_id = 'decade-' . sanitize_title($range);
+    echo '<section class="sdp-section">';
+    echo '<div class="sdp-main-inner">';
 
-            echo "<button class='sdp-toggle-btn' data-target-id='{$target_id}'>{$range}</button>";
+    foreach ($grouped_by_decade as $range => $entries) {
+        $target_id = 'decade-' . sanitize_title($range);
 
-            // ADD `hidden` class here for JS to toggle it
-            echo "<div id='{$target_id}' class='sdp-toggle-content hidden'>";
-            echo "<div class='space-y-4'>";
+        echo "<button class='sdp-toggle-btn' data-target-id='{$target_id}'>{$range}</button>";
 
-            foreach ($entries as $entry) {
-                echo "<div class='sdp-card'>";
-                echo "<p class='card-header'>" . esc_html($entry->year) . "</p>";
+        echo "<div id='{$target_id}' class='sdp-toggle-content hidden'>";
+        echo "<div class='space-y-4'>";
 
-                if (!empty($entry->edition)) {
-                    echo "<p><strong>Edition:</strong> " . esc_html($entry->edition) . "</p>";
-                }
-                if (!empty($entry->location)) {
-                    echo "<p><strong>Location:</strong> " . esc_html($entry->location) . "</p>";
-                }
-                if (!empty($entry->date_range)) {
-                    echo "<p><strong>Dates:</strong> " . esc_html($entry->date_range) . "</p>";
-                }
+        foreach ($entries as $entry) {
+            echo "<div class='sdp-card'>";
+            echo "<p class='card-header'>" . esc_html($entry->year) . "</p>";
 
-                echo "</div>";
+            if (!empty($entry->edition)) {
+                echo "<p><strong>Edition:</strong> " . esc_html($entry->edition) . "</p>";
+            }
+            if (!empty($entry->location)) {
+                echo "<p><strong>Location:</strong> " . esc_html($entry->location) . "</p>";
+            }
+            if (!empty($entry->date_range)) {
+                echo "<p><strong>Dates:</strong> " . esc_html($entry->date_range) . "</p>";
             }
 
-            echo "</div>"; // space-y-4
-            echo "</div>"; // toggle content
+            echo "</div>";
         }
 
-        echo '</div>'; // sdp-main-inner
-        echo '</section>';
+        echo "</div>"; // space-y-4
+        echo "</div>"; // toggle content
+    }
 
-        return ob_get_clean();
+    echo '</div>'; // sdp-main-inner
+    echo '</section>';
+
+    return ob_get_clean();
     }
 
 
@@ -151,87 +157,93 @@ class StateDirectoryRenderer {
      * @return string The HTML content for the past presidents section.
      */
     public static function render_past_presidents() {
-        global $wpdb;
+    global $wpdb;
 
-        $table = $wpdb->prefix . 'eangus_directory';
+    $table = $wpdb->prefix . 'eangus_directory';
 
-        $results = $wpdb->get_results("
-            SELECT *
-            FROM {$table}
-            WHERE type = 'past_president'
-            ORDER BY term_start ASC
-        ");
+    // Changed ORDER BY to DESC for newest first
+    $results = $wpdb->get_results("
+        SELECT *
+        FROM {$table}
+        WHERE type = 'past_president'
+        ORDER BY term_start DESC
+    ");
 
-        $grouped_by_decade = [];
+    $grouped_by_decade = [];
 
-        foreach ($results as $entry) {
-            if (!empty($entry->term_start) && is_numeric($entry->term_start)) {
-                $decade_start = floor($entry->term_start / 10) * 10;
-                $label = "{$decade_start} - " . ($decade_start + 9);
-                $grouped_by_decade[$label][] = $entry;
-            } else {
-                $grouped_by_decade['Unknown'][] = $entry;
-            }
+    foreach ($results as $entry) {
+        if (!empty($entry->term_start) && is_numeric($entry->term_start)) {
+            $decade_start = floor($entry->term_start / 10) * 10;
+            $label = "{$decade_start} - " . ($decade_start + 9);
+            $grouped_by_decade[$label][] = $entry;
+        } else {
+            $grouped_by_decade['Unknown'][] = $entry;
         }
+    }
 
-        ob_start();
+    // Sort decades by most recent first
+    uksort($grouped_by_decade, function($a, $b) {
+        if ($a === 'Unknown') return 1;
+        if ($b === 'Unknown') return -1;
+        
+        $decade_a = (int)substr($a, 0, 4);
+        $decade_b = (int)substr($b, 0, 4);
+        
+        return $decade_b - $decade_a; // DESC order (newest first)
+    });
 
-        echo '<section class="sdp-section">';
-        echo '<div class="sdp-main-inner">';
-        echo "<button class='sdp-toggle-btn' data-target-id='past-presidents'>Past Presidents</button>";
+    ob_start();
 
-        // Add `hidden` class to start collapsed
-        echo "<div id='past-presidents' class='sdp-toggle-content space-y-6 hidden'>";
+    echo '<section class="sdp-section">';
+    echo '<div class="sdp-main-inner">';
+    echo "<button class='sdp-toggle-btn' data-target-id='past-presidents'>Past Presidents</button>";
 
-        foreach ($grouped_by_decade as $decade => $entries) {
-            $toggle_id = 'past-decade-' . sanitize_title($decade);
+    echo "<div id='past-presidents' class='sdp-toggle-content space-y-6 hidden'>";
 
-            echo "<button class='sdp-toggle-btn' data-target-id='{$toggle_id}'>{$decade}</button>";
+    foreach ($grouped_by_decade as $decade => $entries) {
+        $toggle_id = 'past-decade-' . sanitize_title($decade);
 
-            // Add `hidden` class to start collapsed
-            echo "<div id='{$toggle_id}' class='sdp-toggle-content hidden'>";
-            echo "<div class='sdp-card-grid'>";
+        echo "<button class='sdp-toggle-btn' data-target-id='{$toggle_id}'>{$decade}</button>";
 
-            foreach ($entries as $entry) {
-                echo "<div class='sdp-card'>";
+        echo "<div id='{$toggle_id}' class='sdp-toggle-content hidden'>";
+        echo "<div class='sdp-card-grid'>";
 
-                // Construct term
-                if (!empty($entry->term_start)) {
-                    $term = $entry->term_start;
-                    if (!empty($entry->term_end)) {
-                        $term .= " – {$entry->term_end}";
-                    }
-                    echo "<p><strong>Term:</strong> " . esc_html($term) . "</p>";
+        foreach ($entries as $entry) {
+            echo "<div class='sdp-card'>";
+
+            if (!empty($entry->term_start)) {
+                $term = $entry->term_start;
+                if (!empty($entry->term_end)) {
+                    $term .= " – {$entry->term_end}";
                 }
-
-                // Name with rank
-                if (!empty($entry->rank) || !empty($entry->first_name) || !empty($entry->last_name)) {
-                    $name = trim("{$entry->rank} {$entry->first_name} {$entry->last_name}");
-                    echo "<p><strong>Name:</strong> " . esc_html($name) . "</p>";
-                }
-
-                // Email
-                if (!empty($entry->email)) {
-                    echo "<p><strong>Email:</strong> <a href='mailto:" . esc_attr($entry->email) . "'>" . esc_html($entry->email) . "</a></p>";
-                }
-
-                // Status
-                if (!empty($entry->position)) {
-                    echo "<p><strong>Status:</strong> " . esc_html($entry->position) . "</p>";
-                }
-
-                echo "</div>";
+                echo "<p><strong>Term:</strong> " . esc_html($term) . "</p>";
             }
 
-            echo "</div>"; // sdp-card-grid
-            echo "</div>"; // toggle content
+            if (!empty($entry->rank) || !empty($entry->first_name) || !empty($entry->last_name)) {
+                $name = trim("{$entry->rank} {$entry->first_name} {$entry->last_name}");
+                echo "<p><strong>Name:</strong> " . esc_html($name) . "</p>";
+            }
+
+            if (!empty($entry->email)) {
+                echo "<p><strong>Email:</strong> <a href='mailto:" . esc_attr($entry->email) . "'>" . esc_html($entry->email) . "</a></p>";
+            }
+
+            if (!empty($entry->position)) {
+                echo "<p><strong>Status:</strong> " . esc_html($entry->position) . "</p>";
+            }
+
+            echo "</div>";
         }
 
-        echo "</div>"; // main toggle content
-        echo "</div>"; // container
-        echo "</section>";
+        echo "</div>";
+        echo "</div>";
+    }
 
-        return ob_get_clean();
+    echo "</div>";
+    echo "</div>";
+    echo "</section>";
+
+    return ob_get_clean();
     }
 
 

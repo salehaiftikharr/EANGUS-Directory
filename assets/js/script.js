@@ -1,43 +1,51 @@
-document.addEventListener("DOMContentLoaded", function () {
-  console.log("Toggle script initialized!");
+// ===== REPLACE THE ENTIRE assets/js/script.js file with this: =====
 
-  // Enhanced toggle functionality - Fixed version
+document.addEventListener("DOMContentLoaded", function () {
+  console.log("Enhanced toggle script initialized!");
+
+  // Enhanced toggle functionality with better handling
   document.querySelectorAll(".sdp-toggle-btn").forEach((btn) => {
     btn.addEventListener("click", function(e) {
-      e.preventDefault(); // Prevent any default behavior
+      e.preventDefault();
+      e.stopPropagation(); // Prevent event bubbling
       
       const targetId = this.getAttribute("data-target-id");
       const content = document.getElementById(targetId);
 
       if (content) {
-        console.log("Toggling content for:", targetId); // Debug log
+        console.log("Toggling content for:", targetId);
         
-        // Toggle the content visibility
         const isCurrentlyHidden = content.classList.contains("hidden");
         
         if (isCurrentlyHidden) {
           // Show content
           content.classList.remove("hidden");
           this.classList.add("expanded");
-          console.log("Showing content"); // Debug log
+          
+          // Force reflow to ensure proper display
+          content.offsetHeight;
+          
+          console.log("Showing content for:", targetId);
         } else {
           // Hide content
           content.classList.add("hidden");
           this.classList.remove("expanded");
-          console.log("Hiding content"); // Debug log
+          console.log("Hiding content for:", targetId);
         }
       } else {
-        console.error("Content element not found:", targetId); // Debug log
+        console.error("Content element not found:", targetId);
       }
     });
   });
 
-  // Filter functionality for dropdown filters
+  // Enhanced filter functionality
   document.querySelectorAll(".sdp-subfilter").forEach((dropdown) => {
     dropdown.addEventListener("change", function () {
       const section = dropdown.closest(".sdp-section");
       const filterValue = this.value;
       const cards = section.querySelectorAll(".sdp-card");
+
+      console.log("Filtering by:", filterValue);
 
       cards.forEach((card) => {
         const cardFilterValue = card.dataset.filter;
@@ -50,43 +58,44 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Optional: Accordion behavior (close other sections when opening a new one)
-  // This is a separate event listener to handle accordion behavior
-  const enableAccordion = false; // Set to true if you want accordion behavior
-
-  if (enableAccordion) {
-    document.querySelectorAll(".sdp-toggle-btn").forEach((btn) => {
-      btn.addEventListener("click", function() {
-        const targetId = this.getAttribute("data-target-id");
-        const currentContent = document.getElementById(targetId);
-        
-        // Find all other toggle contents in the same parent section
-        const parentSection = this.closest(".sdp-section");
-        if (parentSection && !currentContent.classList.contains("hidden")) {
-          const allContents = parentSection.querySelectorAll(".sdp-toggle-content");
-          const allButtons = parentSection.querySelectorAll(".sdp-toggle-btn");
-          
-          allContents.forEach((content) => {
-            if (content !== currentContent && !content.classList.contains("hidden")) {
-              content.classList.add("hidden");
-            }
-          });
-          
-          allButtons.forEach((button) => {
-            if (button !== this) {
-              button.classList.remove("expanded");
-            }
-          });
-        }
-      });
+  // Smooth scroll for hero navigation links
+  document.querySelectorAll('.sdp-hero-links a[href^="#"]').forEach((link) => {
+    link.addEventListener("click", function(e) {
+      e.preventDefault();
+      const targetId = this.getAttribute("href").substring(1);
+      const targetElement = document.getElementById(targetId);
+      
+      if (targetElement) {
+        targetElement.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      }
     });
-  }
+  });
 
-  // Debug: Log all toggle buttons and their targets
+  // Debug information
   console.log("Found toggle buttons:", document.querySelectorAll(".sdp-toggle-btn").length);
+  console.log("Found toggle contents:", document.querySelectorAll(".sdp-toggle-content").length);
+  
+  // Validate all toggle button/content pairs
   document.querySelectorAll(".sdp-toggle-btn").forEach((btn, index) => {
     const targetId = btn.getAttribute("data-target-id");
     const target = document.getElementById(targetId);
-    console.log(`Button ${index + 1}: targets "${targetId}", found: ${!!target}`);
+    console.log(`Button ${index + 1}: "${btn.textContent.trim()}" -> "${targetId}" (Found: ${!!target})`);
+    
+    if (!target) {
+      console.warn(`Missing target element for button: ${targetId}`);
+    }
+  });
+
+  // Handle any orphaned content (content without corresponding buttons)
+  document.querySelectorAll(".sdp-toggle-content").forEach((content) => {
+    const contentId = content.id;
+    const correspondingButton = document.querySelector(`[data-target-id="${contentId}"]`);
+    
+    if (!correspondingButton) {
+      console.warn(`Found orphaned content element: ${contentId}`);
+    }
   });
 });

@@ -241,9 +241,9 @@
 /* Toggle content visibility */
 .sdp-container .sdp-toggle-content {
   margin-top: 1rem !important;
-  transition: opacity 0.3s ease, max-height 0.3s ease !important;
-  overflow: hidden !important;
-  max-height: 1000px !important;
+  transition: opacity 0.3s ease !important;
+  overflow: visible !important; /* Changed from hidden */
+  max-height: none !important; /* Changed from 1000px */
   opacity: 1 !important;
 }
 
@@ -254,6 +254,7 @@
   margin-bottom: 0 !important;
   padding-top: 0 !important;
   padding-bottom: 0 !important;
+  overflow: hidden !important; 
 }
 
 /* Cards and Layout with enhanced protection */
