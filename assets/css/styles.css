@@ -238,13 +238,16 @@
   content: '−' !important;
 }
 
-/* Toggle content visibility */
+/* FIXED: Toggle content visibility - removed problematic height restrictions */
 .sdp-container .sdp-toggle-content {
   margin-top: 1rem !important;
   transition: opacity 0.3s ease !important;
-  overflow: visible !important; /* Changed from hidden */
-  max-height: none !important; /* Changed from 1000px */
+  overflow: visible !important;
+  max-height: none !important;
+  height: auto !important;
   opacity: 1 !important;
+  display: block !important;
+  visibility: visible !important;
 }
 
 .sdp-container .sdp-toggle-content.hidden {
@@ -255,9 +258,11 @@
   margin-bottom: 0 !important;
   padding-top: 0 !important;
   padding-bottom: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
 }
 
-/* Cards and Layout with enhanced protection */
+/* Cards and Layout with enhanced protection - 2 Column Layout */
 .sdp-container .sdp-card,
 .sdp-container .card {
   background-color: #ffffff !important;
@@ -269,6 +274,10 @@
   box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
   width: auto !important;
   display: block !important;
+  height: auto !important;
+  min-height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
 }
 
 .sdp-container .card-header {
@@ -280,15 +289,19 @@
 }
 
 .sdp-container .sdp-card-grid {
-  display: flex !important;
-  flex-wrap: wrap !important;
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
   gap: 1rem !important;
   margin: 0 !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
 }
 
 .sdp-container .sdp-card {
-  flex: 1 1 calc(50% - 1rem) !important;
-  min-width: 260px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  flex: none !important;
 }
 
 /* Lists with theme override protection */
@@ -296,6 +309,9 @@
   list-style: none !important;
   padding-left: 0 !important;
   margin: 0 !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
 }
 
 .sdp-container .sdp-section ul li {
@@ -303,6 +319,9 @@
   margin-top: 0 !important;
   padding: 0 !important;
   list-style: none !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
 }
 
 .sdp-container .sdp-section ul li::before {
@@ -394,12 +413,23 @@
     font-size: 2rem !important;
   }
   
-  .sdp-container .sdp-card {
-    flex: 1 1 100% !important;
+  .sdp-container .sdp-card-grid {
+    grid-template-columns: 1fr !important;
   }
   
   .sdp-container .sdp-main {
     padding: 2rem 0.5rem 1.5rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .sdp-container .sdp-card-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.5rem !important;
+  }
+  
+  .sdp-container .sdp-card {
+    padding: 1rem !important;
   }
 }
 
@@ -452,4 +482,24 @@
   border-radius: 0.5rem !important;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
   border: 1px solid #e5e7eb !important;
+}
+
+/* ADDITIONAL FIX: Ensure no height restrictions anywhere */
+.sdp-container div {
+  max-height: none !important;
+}
+
+.sdp-container .sdp-toggle-content div {
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+/* Make sure parent containers don't restrict height */
+.sdp-container .sdp-section,
+.sdp-container .sdp-main-inner,
+.sdp-container .sdp-main {
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
 }
