@@ -248,13 +248,13 @@
 }
 
 .sdp-container .sdp-toggle-content.hidden {
-  max-height: 0 !important;
+  display: none !important;
+  visibility: hidden !important;
   opacity: 0 !important;
   margin-top: 0 !important;
   margin-bottom: 0 !important;
   padding-top: 0 !important;
   padding-bottom: 0 !important;
-  overflow: hidden !important; 
 }
 
 /* Cards and Layout with enhanced protection */

@@ -52,7 +52,7 @@ class StateDirectoryRenderer {
         echo "<button class='sdp-toggle-btn' data-target-id='{$target_id}'>{$range}</button>";
 
         echo "<div id='{$target_id}' class='sdp-toggle-content hidden'>";
-        echo "<div class='space-y-4'>";
+        echo "<div class='sdp-card-grid'>";
 
         foreach ($entries as $entry) {
             echo "<div class='sdp-card'>";
@@ -379,7 +379,7 @@ class StateDirectoryRenderer {
                 ));
 
                 if ($leaders) {
-                    echo '<div class="space-y-4 mt-2">';
+                    echo '<div class="sdp-card-grid mt-2">';
                     foreach ($leaders as $leader) {
                         echo '<div class="sdp-card">';
 
