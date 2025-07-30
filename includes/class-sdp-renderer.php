@@ -110,35 +110,43 @@ class StateDirectoryRenderer {
         echo '<section class="sdp-section">';
         echo '<div class="sdp-main-inner">';
 
-       echo "<button class='sdp-toggle-btn' data-target-id='executive-officers'>Executive Officers</button>";
+        echo "<button class='sdp-toggle-btn' data-target-id='executive-officers'>Executive Officers</button>";
 
         // Add `hidden` to start collapsed
         echo "<div id='executive-officers' class='sdp-toggle-content hidden'>";
         echo "<h3 class='subsection-title'>Term Year: {$term_year}</h3>";
+        
+        // Add the card grid wrapper like State Leadership
+        echo "<div class='sdp-card-grid'>";
 
         foreach ($results as $entry) {
-            echo "<div class='sdp-card space-y-2'>";
+            echo "<div class='sdp-card'>";
 
+            // Position as bold header (like State Leadership)
             if (!empty($entry->position)) {
                 echo "<p class='card-header'>" . esc_html($entry->position) . "</p>";
             }
 
+            // Name without "Name:" label (like State Leadership)
             if (!empty($entry->rank) || !empty($entry->first_name) || !empty($entry->last_name)) {
                 $full_name = trim("{$entry->rank} {$entry->first_name} {$entry->last_name}");
-                echo "<p>Name: " . esc_html($full_name) . "</p>";
+                echo "<p>" . esc_html($full_name) . "</p>";
             }
 
+            // Email as clickable link
             if (!empty($entry->email)) {
-                echo "<p>Email: <a href='mailto:" . esc_attr($entry->email) . "'>" . esc_html($entry->email) . "</a></p>";
+                echo "<p><a href='mailto:" . esc_attr($entry->email) . "'>" . esc_html($entry->email) . "</a></p>";
             }
 
+            // Phone without label
             if (!empty($entry->phone_mobile)) {
-                echo "<p>Mobile Phone: " . esc_html($entry->phone_mobile) . "</p>";
+                echo "<p>" . esc_html($entry->phone_mobile) . "</p>";
             }
 
             echo "</div>";
         }
 
+        echo "</div>"; // Close card grid
         echo "</div>"; // Toggle content
         echo "</div>"; // Container
         echo '</section>';
@@ -224,6 +232,7 @@ class StateDirectoryRenderer {
                 echo "<p><strong>Name:</strong> " . esc_html($name) . "</p>";
             }
 
+            // FIXED: Email as clickable link
             if (!empty($entry->email)) {
                 echo "<p><strong>Email:</strong> <a href='mailto:" . esc_attr($entry->email) . "'>" . esc_html($entry->email) . "</a></p>";
             }
@@ -303,7 +312,12 @@ class StateDirectoryRenderer {
 
                 foreach ($fields as $key => $label) {
                     if (!empty($entry->$key)) {
-                        $cardContent .= "<p><strong>{$label}:</strong> " . esc_html($entry->$key) . "</p>";
+                        // FIXED: Make email fields clickable links
+                        if ($key === 'email') {
+                            $cardContent .= "<p><strong>{$label}:</strong> <a href='mailto:" . esc_attr($entry->$key) . "'>" . esc_html($entry->$key) . "</a></p>";
+                        } else {
+                            $cardContent .= "<p><strong>{$label}:</strong> " . esc_html($entry->$key) . "</p>";
+                        }
                     }
                 }
 
@@ -390,6 +404,7 @@ class StateDirectoryRenderer {
                         $full_name = trim("{$leader->rank} {$leader->first_name} {$leader->last_name}");
                         echo "<p>" . esc_html($full_name) . "</p>";
 
+                        // ALREADY CORRECT: Email as clickable link
                         if (!empty($leader->email)) {
                             echo '<p><a href="mailto:' . esc_attr($leader->email) . '">' . esc_html($leader->email) . '</a></p>';
                         }
@@ -470,6 +485,7 @@ class StateDirectoryRenderer {
                     echo '<p class="card-header">' . esc_html($member->position) . '</p>';
                     echo '<p>' . esc_html(trim("{$member->rank} {$member->first_name} {$member->last_name}")) . '</p>';
 
+                    // FIXED: Email as clickable link
                     if (!empty($member->email)) {
                         echo '<p><a href="mailto:' . esc_attr($member->email) . '">' . esc_html($member->email) . '</a></p>';
                     }

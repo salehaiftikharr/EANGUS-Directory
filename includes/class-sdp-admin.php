@@ -288,7 +288,7 @@ class StateDirectoryAdmin {
             'date_range' => 'e.g., August 15-18, 2024',
             'position' => 'e.g., President, Vice President',
             'rank' => 'e.g., CMSgt, MSgt, SMSgt',
-            'edition' => 'e.g., 53rd Annual Conference',
+            'edition' => 'e.g., 53rd',
             'location' => 'e.g., Holiday Inn - Sioux Falls, SD',
             'address' => 'Full mailing address',
         ];

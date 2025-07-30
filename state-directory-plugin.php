@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: State Directory Plugin
-Description: A plugin to manage and display a directory of EANGUS leadership data.
+Description: A plugin to manage and display a directory of EANGUS leadership data. Only to be activated on the EANGUS site and not on the state sites. 
 Version: 1.3
 Author: Saleha Iftikhar
 */
