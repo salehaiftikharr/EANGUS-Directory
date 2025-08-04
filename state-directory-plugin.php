@@ -74,7 +74,7 @@ function sdp_create_database_table() {
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
     dbDelta($sql);
     
-    add_option('sdp_db_version', '1.1');
+    add_option('sdp_db_version', '1.3');
 }
 
 /**
